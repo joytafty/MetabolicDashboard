@@ -22,7 +22,7 @@ with open(datpath + 'steps.json', 'w') as file:
     	file.write(json.dumps(st) + '\n')
     print 'cat ' + datpath + 'steps.json'
 
-# Export SLEEP
+# Export DISTANCE
 with open(datpath + 'distance.json', 'w') as file:
 	for dist in distance:
 		file.write(json.dumps(dist) + '\n')
