@@ -1,10 +1,11 @@
 import fitbit
 import json
+import os
 
-# DNconsumer_key = 'e83cb29ae0f0439e8aeb2704b5e9eaa4'
-# DNconsumer_secret = '77fdd761c63247868627cc4ed2114306'
-# DNuser_key = 'e543804b25d1aba781d1d8472eb899bd'
-# DNuser_secret = '4d8da8bf4adc2df317d32ed86c8bc1c1'
+DNconsumer_key = os.getenv('DNconsumer_key')
+DNconsumer_secret = os.getenv('DNconsumer_secret')
+DNuser_key = os.getenv('DNuser_key')
+DNconsumer_secret = os.getenv('DNconsumer_secret')
 
 fb = fitbit.Fitbit(DNconsumer_key, DNconsumer_secret, 
 	user_key=DNuser_key, user_secret=DNuser_secret)
