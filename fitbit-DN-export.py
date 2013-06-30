@@ -5,7 +5,7 @@ import os
 DNconsumer_key = os.getenv('DNconsumer_key')
 DNconsumer_secret = os.getenv('DNconsumer_secret')
 DNuser_key = os.getenv('DNuser_key')
-DNconsumer_secret = os.getenv('DNconsumer_secret')
+DNuser_secret = os.getenv('DNuser_secret')
 
 fb = fitbit.Fitbit(DNconsumer_key, DNconsumer_secret, 
 	user_key=DNuser_key, user_secret=DNuser_secret)
