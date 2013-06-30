@@ -5,6 +5,7 @@ import datetime
 import fitbit
 from flask import Flask
 from functools import update_wrapper
+from jinja2 import Environment, FileSystemLoader
 import json
 import os
 import redis
@@ -150,9 +151,16 @@ def server():
             list(redis.smembers('activities')) +
             list(redis.smembers('food'))])
         return s
+
+    @app.route('/')
+    def index_html():
+        context = {
+        }
+        env = Environment(loader=FileSystemLoader('templates'))
+        return env.get_template('index.html').render(context)
     
     print 'Listening :8001...'
-    # app.run(host='0.0.0.0', port=8001, use_debugger=True)
+    app.run(host='0.0.0.0', port=8001, use_debugger=True)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
     try:
