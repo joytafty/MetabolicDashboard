@@ -23,6 +23,7 @@ d3.json('/data.json', function (err, data) {
                 d.name     = d.loggedFood.name;
                 d.calories = d.loggedFood.calories;
                 d.day      = parseDate(d.logDate);
+                // Compute weekday using JS
             } else {
                 d.name = d.type;
                 d.calories = parseFloat(d.value);
@@ -33,7 +34,11 @@ d3.json('/data.json', function (err, data) {
     console.log(data[data.length-1]);
     
     cross = crossfilter(data);
+    //Aggregate data using (crossfilter wrapper)
+    //Important cross filter function
+    // * Dimension/group/filter
     d = cross.dimension(function(d) { return d.day; });
+    //Summary data by group (crossfilter functions)
     g = d.group().reduceSum(function(d) { return d.calories; });
         
     dc.lineChart('#chart1')
