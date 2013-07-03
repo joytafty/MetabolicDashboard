@@ -170,8 +170,7 @@ def server():
     # @crossdomain(origin='*')
     def data_json():
         s = json.dumps([json.loads(s) for s in 
-            list(redis.smembers('activities')) +
-            list(redis.smembers('food'))])
+            list(redis.smembers('fitbit'))])
         return s
 
     @app.route('/')

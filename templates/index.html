@@ -17,13 +17,7 @@ d3.json('/data.json', function (err, data) {
     // 1. Time
     parseDate = d3.time.format("%Y-%m-%d").parse;
     data.forEach(function(d) {
-        if (d.dateTime) {
-            d.day = parseDate(d.dateTime);
-        }
-
-        if (!d.ID) {
-            d.ID = 'Dirk';
-        }
+        d.day = new Date(d.time * 1e3);
 
         // Plot value attribute***
         // ** ID (dirk), 
@@ -33,18 +27,6 @@ d3.json('/data.json', function (err, data) {
         // ** Time (day in fitbit)
         // ** Data type
         // Set Location Flag to "Pasadena"
-        if (d.name == undefined) {
-            if (d.loggedFood) {
-                d.name  = d.loggedFood.name;
-                d.value = d.loggedFood.calories;
-                d.day  = parseDate(d.logDate);
-                d.exp   = d.loggedFood.mealtypeID;
-                // Compute weekday using JS
-            } else {
-                d.name = d.type;
-                d.value = parseFloat(d.value);
-            }
-        }
     });
     console.log(data[0]);
     console.log(data[data.length-1]);
@@ -53,7 +35,7 @@ d3.json('/data.json', function (err, data) {
     //Summary data by group (crossfilter functions)
     // Group by Time
     d = cross.dimension(function(d) { return d.day; });
-    g = d.group().reduceSum(function(d) { return d.calories; });
+    g = d.group().reduceSum(function(d) { return d.value; });
     dc.lineChart('#chart1')
     .dimension(d)
     .group(g)
@@ -64,7 +46,7 @@ d3.json('/data.json', function (err, data) {
     .elasticY(true);
     
     // Group by Food type
-    d = cross.dimension(function(d) { return d.name; });
+    d = cross.dimension(function(d) { return d.identity; });
     g = d.group().reduceSum(function(d) { return 1; });
     dc.pieChart('#chart2')
     .dimension(d)
@@ -72,7 +54,7 @@ d3.json('/data.json', function (err, data) {
     .height(512)
     .width(512);
 
-    d = cross.dimension(function(d) { return d.exp; });
+    d = cross.dimension(function(d) { return d.experiment; });
     g = d.group().reduceSum(function(d) { return 1; });
     dc.pieChart('#chart3')
     .dimension(d)
