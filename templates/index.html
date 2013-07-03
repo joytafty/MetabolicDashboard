@@ -9,6 +9,12 @@
     <div id="chart2"></div>
     <div id="chart3"></div>
     <div id="chart4"></div>
+    <div id="table1"></div>
+    <style>
+    td {
+        padding-right: 4px;
+    }
+    </style>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js" ></script>
@@ -87,6 +93,21 @@ d3.json('/data.json', function (err, data) {
             dc.redrawAll();
         }
     });
+    
+    table1 = dc.dataTable('#table1')
+    .dimension(d4)
+    .group(function(d) { return d.type;})
+    .width(512)
+    .height(512)
+    .columns([
+        function(d) { return d.day.getFullYear() + '-' + d.day.getMonth() + '-' + d.day.getDate() },
+        function(d) { return d.type },
+        function(d) { return d.value },
+        function(d) { return d.location; },
+    ])
+    .sortBy(function(d) {
+        return d.time;
+    })
 
     
     // Group by Location
