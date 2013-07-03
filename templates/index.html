@@ -6,27 +6,43 @@
 <body>
     <div id="chart1"></div>
     <div id="chart2"></div>
+    <div id="chart3"></div>
+    <div id="chart4"></div>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/crossfilter/1.1.3/crossfilter.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/dc/1.3.0/dc.min.js"></script>
     <script>
 d3.json('/data.json', function (err, data) {
-
-    
+    // 1. Time
     parseDate = d3.time.format("%Y-%m-%d").parse;
     data.forEach(function(d) {
         if (d.dateTime) {
             d.day = parseDate(d.dateTime);
         }
+
+        if (!d.ID) {
+            d.ID = 'Dirk';
+        }
+
+        // Plot value attribute***
+        // ** ID (dirk), 
+        // ** Exp (calories spent, calotiesIn), 
+        // ** Loc (Pasadena) in the brain 
+        // ** Val (calories) 
+        // ** Time (day in fitbit)
+        // ** Data type
+        // Set Location Flag to "Pasadena"
         if (d.name == undefined) {
             if (d.loggedFood) {
-                d.name     = d.loggedFood.name;
-                d.calories = d.loggedFood.calories;
-                d.day      = parseDate(d.logDate);
+                d.name  = d.loggedFood.name;
+                d.value = d.loggedFood.calories;
+                d.day  = parseDate(d.logDate);
+                d.exp   = d.loggedFood.mealtypeID;
                 // Compute weekday using JS
             } else {
                 d.name = d.type;
-                d.calories = parseFloat(d.value);
+                d.value = parseFloat(d.value);
             }
         }
     });
@@ -34,13 +50,10 @@ d3.json('/data.json', function (err, data) {
     console.log(data[data.length-1]);
     
     cross = crossfilter(data);
-    //Aggregate data using (crossfilter wrapper)
-    //Important cross filter function
-    // * Dimension/group/filter
-    d = cross.dimension(function(d) { return d.day; });
     //Summary data by group (crossfilter functions)
+    // Group by Time
+    d = cross.dimension(function(d) { return d.day; });
     g = d.group().reduceSum(function(d) { return d.calories; });
-        
     dc.lineChart('#chart1')
     .dimension(d)
     .group(g)
@@ -50,6 +63,7 @@ d3.json('/data.json', function (err, data) {
     .y(d3.scale.linear())
     .elasticY(true);
     
+    // Group by Food type
     d = cross.dimension(function(d) { return d.name; });
     g = d.group().reduceSum(function(d) { return 1; });
     dc.pieChart('#chart2')
@@ -57,7 +71,17 @@ d3.json('/data.json', function (err, data) {
     .group(g)
     .height(512)
     .width(512);
+
+    d = cross.dimension(function(d) { return d.exp; });
+    g = d.group().reduceSum(function(d) { return 1; });
+    dc.pieChart('#chart3')
+    .dimension(d)
+    .group(g)
+    .height(512)
+    .width(512);
     
+    // Group by Location
+
     dc.renderAll();
 });
     </script>
