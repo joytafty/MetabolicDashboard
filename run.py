@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 import json
 import os
 import redis
+import time
 
 redis = redis.Redis()
 
@@ -62,21 +63,35 @@ def load():
         user_key=os.getenv('FITBIT_USER_KEY'),
         user_secret=os.getenv('FITBIT_USER_SECRET'))
     
+    redis.delete('fitbit')
+    
     if True:
         for datum in fb.time_series('activities/caloriesBMR', period='max')['activities-caloriesBMR']:
             if datum['value'] != '0':
-                datum['type'] = 'caloriesBMR'
+                datum['experiment'] = 'caloriesBMR'
+                datum['identity']   = 'Dirk'
+                datum['location']   = 'Pasadena, CA'
+                datum['type']       = 'caloriesBMR'
+                datum['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
+                datum['units']      = 'calories'
+                datum['value']      = -float(datum['value'])
                 s = json.dumps(datum)
-                redis.sadd('activities', s)
+                redis.sadd('fitbit', s)
                 print s
 
     if True:
         for datum in fb.time_series('activities/activityCalories', period='max')['activities-activityCalories']:
             if datum['value'] != '0':
                 for activity in  fb.activities(datum['dateTime'])['activities']:
-                    activity['dateTime'] = datum['dateTime']
+                    activity['experiment'] = 'activity'
+                    activity['identity']   = 'Dirk'
+                    activity['location']   = 'Pasadena, CA'
+                    activity['type']       = 'activity'
+                    activity['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
+                    activity['units']      = 'calories'
+                    activity['value']      = activity['calories']
                     s = json.dumps(activity)
-                    redis.sadd('activities', s)
+                    redis.sadd('fitbit', s)
                     print s
     #     # file.write(json.dumps(steps) + '\n')
 
@@ -84,8 +99,15 @@ def load():
         for datum in fb.time_series('foods/log/caloriesIn', period='max')['foods-log-caloriesIn']:
             if datum['value'] != '0':
                 for food in fb.foods(datum['dateTime'])['foods']:
+                    food['experiment'] = 'loggedFood'
+                    food['identity']   = 'Dirk'
+                    food['location']   = 'Pasadena, CA'
+                    food['type']       = 'loggedFood'
+                    food['time']       =  time.mktime(datetime.datetime.strptime(food['logDate'], '%Y-%m-%d').timetuple())
+                    food['units']      = 'calories'
+                    food['value']      = food['loggedFood']['calories']
                     s = json.dumps(food)
-                    redis.sadd('food', s)
+                    redis.sadd('fitbit', s)
                     print s
 
 
