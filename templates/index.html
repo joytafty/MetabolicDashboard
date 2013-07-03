@@ -76,11 +76,13 @@ d3.json('/data.json', function (err, data) {
         if (e.keyCode == 13) {
             searchterm = this.value;
             if(searchterm == "") {
+                // d4.filterAll();
                 chart3.filterAll();
             } else {
-                d4.filterAll();
-                d4.filter(function (d) { return d.indexOf(searchterm) > -1; });
-                chart3.filter(searchterm);
+                // d4.filterAll();
+                // d4.filter(function (d) { return d.indexOf(searchterm) > -1; });
+                //chart3.filter(searchterm);
+                chart3.filter(function (d) { return d.toLowerCase().indexOf(searchterm.toLowerCase()) > -1; });
             }
             dc.redrawAll();
         }
