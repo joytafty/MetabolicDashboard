@@ -179,7 +179,7 @@ def server():
         context = {
         }
         env = Environment(loader=FileSystemLoader('templates'))
-        return env.get_template('index.html').render(context)
+        return env.get_template('index2.html').render(context)
     
     print 'Listening :8001...'
     app.run(host='0.0.0.0', port=8001, use_debugger=True)
