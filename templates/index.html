@@ -1,22 +1,46 @@
 <html>
 <head>
     <title>Fitbit</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/dc.js/master/test/dc.css"/>
 </head>
 <body>
-    <input id="input1" type="text"></input>
-    <div id="chart1"></div>
-    <div id="chart2"></div>
-    <div id="chart3"></div>
-    <div id="chart4"></div>
-    <div id="table1"></div>
+    
+    <div class="row">
+        <div class="span12">
+          <input id="input1" type="text" class="search-query" placeholder="Search">
+          <button class='btn add-on'><i class="icon-search"></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <ul class="nav nav-tabs nav-stacked">
+                <li class="active"><a href="#">Questionaires <span style="color: gray">(4 entries)</span></a></li>
+                <li><a href="#">Files <span style="color: gray">(94 entries)</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div id="chart2"></div>
+        <div id="chart3"></div>
+        <div id="chart4"></div>
+    </div>
+    <div id="row">
+        <div id="chart1"></div>
+        <div id="table1"></div>
+    </div>
     <style>
-    td {
-        padding-right: 4px;
-    }
+path {
+    color: white;
+}
+td {
+    padding-right: 4px;
+}
     </style>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
     <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js" ></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/dc/1.3.0/dc.min.js"></script>
