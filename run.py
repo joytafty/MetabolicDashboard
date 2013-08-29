@@ -69,8 +69,8 @@ def load():
         for datum in fb.time_series('activities/caloriesBMR', period='max')['activities-caloriesBMR']:
             if datum['value'] != '0':
                 datum['experiment'] = 'caloriesBMR'
-                datum['identity']   = 'Dirk'
-                datum['location']   = 'Pasadena, CA'
+                datum['identity']   = 'Client'
+                datum['location']   = 'Boston, MA'
                 datum['type']       = 'caloriesBMR'
                 datum['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
                 datum['units']      = 'calories'
@@ -83,9 +83,9 @@ def load():
         for datum in fb.time_series('activities/activityCalories', period='max')['activities-activityCalories']:
             if datum['value'] != '0':
                 for activity in  fb.activities(datum['dateTime'])['activities']:
-                    activity['experiment'] = 'activity'
-                    activity['identity']   = 'Dirk'
-                    activity['location']   = 'Pasadena, CA'
+                    activity['experiment'] = 'Stage'
+                    activity['identity']   = 'Client'
+                    activity['location']   = 'Boston, MA'
                     activity['type']       = 'activity'
                     activity['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
                     activity['units']      = 'calories'
@@ -100,7 +100,7 @@ def load():
             if datum['value'] != '0':
                 for food in fb.foods(datum['dateTime'])['foods']:
                     food['experiment'] = 'loggedFood'
-                    food['identity']   = 'Dirk'
+                    food['identity']   = 'Client'
                     food['location']   = 'Pasadena, CA'
                     food['type']       = 'loggedFood'
                     food['time']       =  time.mktime(datetime.datetime.strptime(food['logDate'], '%Y-%m-%d').timetuple())
@@ -109,7 +109,6 @@ def load():
                     s = json.dumps(food)
                     redis.sadd('fitbit', s)
                     print s
-
 
 def authenticate():
     import oauth2 as oauth
@@ -180,6 +179,14 @@ def server():
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
     
+    @app.route('/optmedata')
+    def optmedata_html():
+        context = {
+        }
+        env = Environment(loader=FileSystemLoader('templates'))
+        return env.get_template('optmedata.html').render(context)
+
+
     print 'Listening :8001...'
     app.run(host='0.0.0.0', port=8001, use_debugger=True)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
@@ -200,4 +207,6 @@ if __name__ == '__main__':
         load()
     if args.command == 'server':
         server()
+    if args.command == 'fetchoptme':
+        fetchoptme()
 

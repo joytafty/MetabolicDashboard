@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>OptMe Dashboard</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/dc.js/master/test/dc.css"/>
+    <!-- Loading Google Visualization Library -->
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+    <!-- Loading Google Spreadsheet API -->
+    <script type="text/javascript" src="google-spreadsheet.js"></script>
+    
+    <!-- PROTOTYPE: CVD risk Gauge Plot -->
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['gauge', 'ColumnChart', 'Table']});
+      google.setOnLoadCallback(drawAnthro);
+      google.setOnLoadCallback(drawGauge);      
+
+      function drawAnthro() {
+        var d = google.visualization.arrayToDataTable([
+          ['Measurements', 'Your Measure', 'Ideal Range', 'Notes'],
+          ['Height (inches)', 0, 0, true],
+          ['Weight (pounds)', 0, 0, true],
+          ['Waist Circumference', 0, 0, false],
+          ['Percent Body Fat', 0, 0, true]
+        ]);
+          // Create and draw the visualization.
+      var dash = new google.visualization.Table(document.getElementById('table_div'));
+      dash.draw(d, null);
+
+      }
+
+      function drawGauge() {
+        var d = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Full CVD BMI', 10],
+          ['Hard CVD BMI', 5],
+          ['Full CVD lipids', 12],
+          ['Hard CVD lipids', 8]
+        ]);
+
+        var options = {
+          width: 600, height: 200,
+          redFrom: 80, redTo: 100,
+          yellowFrom:50, yellowTo: 80,
+          greenFrom:0, greenTo:50,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+        chart.draw(d, options);
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Table Anthropometrics -->
+    <div id='table_div'></div>
+    <!-- CVD Risk Gauge Chart -->
+    <div id='chart_div'></div>
+  </body>
+</html>
