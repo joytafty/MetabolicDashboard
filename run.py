@@ -58,57 +58,38 @@ def load():
 
     # see: http://python-fitbit.readthedocs.org/en/latest/#fitbit-api
     fb = fitbit.Fitbit(
-        os.getenv('FITBIT_CONSUMER_KEY'),
-        os.getenv('FITBIT_CONSUMER_SECRET'), 
-        user_key=os.getenv('FITBIT_USER_KEY'),
-        user_secret=os.getenv('FITBIT_USER_SECRET'))
+        os.getenv('CONSUMER_KEY'),
+        os.getenv('CONSUMER_SECRET'), 
+        user_key=os.getenv('USER_KEY'),
+        user_secret=os.getenv('USER_SECRET'))
     
     redis.delete('fitbit')
     
     if True:
-        for datum in fb.time_series('activities/caloriesBMR', period='max')['activities-caloriesBMR']:
-            if datum['value'] != '0':
-                datum['experiment'] = 'caloriesBMR'
-                datum['identity']   = 'Client'
-                datum['location']   = 'Boston, MA'
-                datum['type']       = 'caloriesBMR'
-                datum['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
-                datum['units']      = 'calories'
-                datum['value']      = -float(datum['value'])
-                s = json.dumps(datum)
+        sleepData = dict();
+        sl1 = fb.time_series('sleep/startTime', period='max')['sleep-startTime']
+        sl2 = fb.time_series('sleep/timeInBed', period='max')['sleep-timeInBed']
+        sl3 = fb.time_series('sleep/minutesAsleep', period='max')['sleep-minutesAsleep']
+        sl4 = fb.time_series('sleep/minutesAwake', period='max')['sleep-minutesAwake']
+        sl5 = fb.time_series('sleep/minutesToFallAsleep', period='max')['sleep-minutesToFallAsleep']
+        sl6 = fb.time_series('sleep/minutesAfterWakeup', period='max')['sleep-minutesAfterWakeup']
+        sl7 = fb.time_series('sleep/efficiency', period='max')['sleep-efficiency']
+        
+        for sl in range(len(sl1)-1):            
+            if sl1[sl]['value'] != '':                
+                tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
+                sleepData['date'] = time.mktime(tempdate)
+                temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
+                sleepData['startTime'] = time.mktime(temptime)
+                sleepData['timeInBed'] = sl2[sl]['value']
+                sleepData['minutesAsleep'] = sl3[sl]['value']
+                sleepData['minutesAwake'] = sl4[sl]['value']
+                sleepData['minutesToFallAsleep'] = sl5[sl]['value']
+                sleepData['minutesAfterWakeup'] = sl6[sl]['value']
+                sleepData['efficiency'] = sl7[sl]['value']
+                s = json.dumps(sleepData)
                 redis.sadd('fitbit', s)
                 print s
-
-    if True:
-        for datum in fb.time_series('activities/activityCalories', period='max')['activities-activityCalories']:
-            if datum['value'] != '0':
-                for activity in  fb.activities(datum['dateTime'])['activities']:
-                    activity['experiment'] = 'Stage'
-                    activity['identity']   = 'Client'
-                    activity['location']   = 'Boston, MA'
-                    activity['type']       = 'activity'
-                    activity['time']       =  time.mktime(datetime.datetime.strptime(datum['dateTime'], '%Y-%m-%d').timetuple())
-                    activity['units']      = 'calories'
-                    activity['value']      = activity['calories']
-                    s = json.dumps(activity)
-                    redis.sadd('fitbit', s)
-                    print s
-    #     # file.write(json.dumps(steps) + '\n')
-
-    if True:
-        for datum in fb.time_series('foods/log/caloriesIn', period='max')['foods-log-caloriesIn']:
-            if datum['value'] != '0':
-                for food in fb.foods(datum['dateTime'])['foods']:
-                    food['experiment'] = 'loggedFood'
-                    food['identity']   = 'Client'
-                    food['location']   = 'Pasadena, CA'
-                    food['type']       = 'loggedFood'
-                    food['time']       =  time.mktime(datetime.datetime.strptime(food['logDate'], '%Y-%m-%d').timetuple())
-                    food['units']      = 'calories'
-                    food['value']      = food['loggedFood']['calories']
-                    s = json.dumps(food)
-                    redis.sadd('fitbit', s)
-                    print s
 
 def authenticate():
     import oauth2 as oauth
@@ -179,13 +160,12 @@ def server():
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
     
-    @app.route('/optmedata')
-    def optmedata_html():
+    @app.route('/sleep')
+    def sleep():
         context = {
         }
         env = Environment(loader=FileSystemLoader('templates'))
-        return env.get_template('optmedata.html').render(context)
-
+        return env.get_template('sleep.html').render(context)
 
     print 'Listening :8001...'
     app.run(host='0.0.0.0', port=8001, use_debugger=True)
