@@ -3,7 +3,7 @@
 import argparse
 import datetime
 import fitbit
-from flask import Flask
+from flask import Flask, url_for, render_template
 from functools import update_wrapper
 from jinja2 import Environment, FileSystemLoader
 import json
