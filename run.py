@@ -10,10 +10,12 @@ import json
 import os
 import redis
 import time
+import urlparse
 
 # Heroku
-url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'))
-redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
+# url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'))
+REDIS_URL = urlparse('redis://redistogo:15d661206506247835d3ccd45c1d0f90@beardfish.redistogo.com:10935/');
+redis = redis.Redis(REDIS_URL);
 
 # Local
 # redis = redis.Redis()
