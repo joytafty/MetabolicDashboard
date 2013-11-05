@@ -11,7 +11,12 @@ import os
 import redis
 import time
 
-redis = redis.Redis()
+# Heroku
+url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'))
+redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
+
+# Local
+# redis = redis.Redis()
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
