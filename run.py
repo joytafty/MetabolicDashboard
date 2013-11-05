@@ -170,6 +170,7 @@ def server():
     print 'Listening :8001...'
     app.run(host='0.0.0.0', port=8001, use_debugger=True)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
+    port = int(os.environ.get("PORT", 5000))    
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
     try:
         server.start()
@@ -187,6 +188,3 @@ if __name__ == '__main__':
         load()
     if args.command == 'server':
         server()
-    if args.command == 'fetchoptme':
-        fetchoptme()
-
