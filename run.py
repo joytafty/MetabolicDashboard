@@ -111,9 +111,8 @@ def authenticate():
         secret = '77fdd761c63247868627cc4ed2114306')
 
     client = oauth.Client(consumer)
-    resp, content = client.request(
-        'https://api.fitbit.com/oauth/request_token',
-        force_auth_header=True)
+    resp, content = client.request('https://api.fitbit.com/oauth/request_token')    
+    # resp, content = client.request('https://api.fitbit.com/oauth/request_token', force_auth_header=True)
     if resp['status'] != '200':
         raise Exception("Invalid response %s." % resp['status'])
 
@@ -155,8 +154,9 @@ def authenticate():
 
 def server():
     from cherrypy import wsgiserver
-    app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'))
-    
+    # app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'))
+    app = Flask(__name__)
+        
     @app.route('/data.json')
     # @crossdomain(origin='*')
     def data_json():
