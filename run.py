@@ -22,7 +22,7 @@ from store import redis
 # redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password);
 
 # Local
-redis = redis.Redis()
+# redis = redis.Redis()
 
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
