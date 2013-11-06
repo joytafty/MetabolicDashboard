@@ -75,9 +75,9 @@ def load():
         sl6 = fb.time_series('sleep/minutesAfterWakeup', period='max')['sleep-minutesAfterWakeup']
         sl7 = fb.time_series('sleep/efficiency', period='max')['sleep-efficiency']
         
-        for sl in range(len(sl1)-1):            
+        for sl in range(len(sl1)):            
             if sl1[sl]['value'] != '':                
-                sleepData['date'] = sl1[sl]['dateTime'];
+                sleepData['date'] = sl1[sl]['dateTime']
                 sleepData['startTime'] = sl1[sl]['value']
                 sleepData['timeInBed'] = sl2[sl]['value']
                 sleepData['minutesAsleep'] = sl3[sl]['value']
