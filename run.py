@@ -98,6 +98,8 @@ def load():
                 sleepData['minutesToFallAsleep'] = sl5[sl]['value']
                 sleepData['minutesAfterWakeup'] = sl6[sl]['value']
                 sleepData['efficiency'] = sl7[sl]['value']
+                sleepData['timezone'] = fb.user_profile_get()['user']['timezone']
+                sleepData['offsetFromUTCMillis'] = fb.user_profile_get()['user']['offsetFromUTCMillis']
                 s = json.dumps(sleepData)
                 redis.sadd('fitbit', s)
                 print s

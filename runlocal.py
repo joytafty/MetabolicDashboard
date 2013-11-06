@@ -79,16 +79,16 @@ def load():
         
         for sl in range(len(sl1)-1):            
             if sl1[sl]['value'] != '':                
-                tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
-                sleepData['date'] = time.mktime(tempdate)
-                temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
-                sleepData['startTime'] = time.mktime(temptime)
+                sleepData['date'] = sl1[sl]['dateTime'];
+                sleepData['startTime'] = sl1[sl]['value']
                 sleepData['timeInBed'] = sl2[sl]['value']
                 sleepData['minutesAsleep'] = sl3[sl]['value']
                 sleepData['minutesAwake'] = sl4[sl]['value']
                 sleepData['minutesToFallAsleep'] = sl5[sl]['value']
                 sleepData['minutesAfterWakeup'] = sl6[sl]['value']
                 sleepData['efficiency'] = sl7[sl]['value']
+                sleepData['timezone'] = fb.user_profile_get()['user']['timezone']
+                sleepData['offsetFromUTCMillis'] = fb.user_profile_get()['user']['offsetFromUTCMillis']
                 s = json.dumps(sleepData)
                 redis.sadd('fitbit', s)
                 print s

@@ -78,24 +78,32 @@
 <body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script src="../static/js/moment.js"></script>
+    <script src="http://momentjs.com/downloads/moment-timezone.min.js"></script>
+    <script src="../static/js/moment-timezone-data.js"></script>
+    <script>
+    $.getJSON("data.json", function(d) {
+        console.log(d[0].timezone);
+        moment().tz(d[0].timezone).format();                                
+    });
+    </script>
     <script type="text/javascript">
         function fetchSleep() {
             $("#fetchsleep").click(function() {
                 // $("#slqual").css("background-color", "white");
                 $.getJSON("data.json", function (d) {
                     $.each(d, function(p, v){
-                        console.log(v);
                         // Sleep Efficiency
                         slef = v.efficiency;
                         // Sleep Duration Value
                         hr_slduration = Math.floor(v.timeInBed/60);
                         min_slduration = (v.timeInBed%60);
                         // Date 
-                        recdate = moment.unix(v.date).format("YYYY mm dd");
+                        recdate = v.date;
                         // Bed Time
-                        slbedtime = moment.unix(v.startTime).format("HH:mm");
+                        slbedtime = v.startTime;
                         // Awake Time
-                        slawaketime = moment(v.startTime).add(v.timeInBed*18000).format("HH:mm")
+                        tempbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm");
+                        slawaketime = moment(tempbedtime).add('m', v.timeInBed).format("HH:mm");
                         // Bind data                        
                         $("#slqual").text(slef);
                         $("#slduration").text(hr_slduration + "h " + min_slduration +"min");
