@@ -156,7 +156,7 @@ def server():
     from cherrypy import wsgiserver
     # app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static'))
     app = Flask(__name__)
-        
+
     @app.route('/data.json')
     # @crossdomain(origin='*')
     def data_json():
@@ -179,14 +179,14 @@ def server():
         return env.get_template('sleep.html').render(context)
 
     print 'Listening :8001...'
-    app.run(host='0.0.0.0', port=8001, use_debugger=True)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     port = int(os.environ.get("PORT", 5000))    
-    # server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
-    # try:
-    #     server.start()
-    # except KeyboardInterrupt:
-    #     server.stop()
+    app.run(host='0.0.0.0', port=port, use_debugger=True)
+    server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Do stuff")
