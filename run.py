@@ -17,7 +17,7 @@ import urlparse
 # REDIS_URL = urlparse('redis://redistogo:15d661206506247835d3ccd45c1d0f90@beardfish.redistogo.com:10935/');
 # redis = redis.Redis(REDIS_URL);
 
-url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:6379'));
+url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'));
 redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password);
 
 # Local
