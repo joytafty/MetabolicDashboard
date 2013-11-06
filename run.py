@@ -8,9 +8,10 @@ from functools import update_wrapper
 from jinja2 import Environment, FileSystemLoader
 import json
 import os
-import redis
+# import redis
 import time
 import urlparse
+from store import redis
 
 # Heroku
 # url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'))
