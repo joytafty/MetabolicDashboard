@@ -13,17 +13,6 @@ import time
 import urlparse
 from store import redis
 
-# Heroku
-# url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'))
-# REDIS_URL = urlparse('redis://redistogo:15d661206506247835d3ccd45c1d0f90@beardfish.redistogo.com:10935/');
-# redis = redis.Redis(REDIS_URL);
-
-# url = urlparse.urlparse(os.environ.get('REDIS_URL', 'redis://localhost:10935'));
-# redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password);
-
-# Local
-# redis = redis.Redis()
-
 def crossdomain(origin=None, methods=None, headers=None,
                 max_age=21600, attach_to_all=True,
                 automatic_options=True):
@@ -88,10 +77,8 @@ def load():
         
         for sl in range(len(sl1)-1):            
             if sl1[sl]['value'] != '':                
-                tempdate = datetime.datetime.strptime(sl1[sl]['dateTime'], '%Y-%m-%d').timetuple()
-                sleepData['date'] = time.mktime(tempdate)
-                temptime = time.strptime((sl1[sl]['dateTime'] + '-' + sl1[sl]['value']), '%Y-%m-%d-%H:%M')
-                sleepData['startTime'] = time.mktime(temptime)
+                sleepData['date'] = sl1[sl]['dateTime'];
+                sleepData['startTime'] = sl1[sl]['value']
                 sleepData['timeInBed'] = sl2[sl]['value']
                 sleepData['minutesAsleep'] = sl3[sl]['value']
                 sleepData['minutesAwake'] = sl4[sl]['value']
