@@ -182,11 +182,11 @@ def server():
     app.run(host='0.0.0.0', port=8001, use_debugger=True)
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     port = int(os.environ.get("PORT", 5000))    
-    server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
-    try:
-        server.start()
-    except KeyboardInterrupt:
-        server.stop()
+    # server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
+    # try:
+    #     server.start()
+    # except KeyboardInterrupt:
+    #     server.stop()
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Do stuff")
