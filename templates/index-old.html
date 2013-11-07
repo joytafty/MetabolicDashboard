@@ -1,0 +1,112 @@
+<html>
+<head>
+    <title>Fitbit</title>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/dc.js/master/test/dc.css"/> -->
+    <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/d3-cookbook/master/css/dc.css"/>
+</head>
+<body>
+    
+    <div class="row">
+        <div class="span12">
+          <input id="input1" type="text" class="search-query" placeholder="Search">
+          <button class='btn add-on'><i class="icon-stroller"></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <ul class="nav nav-tabs nav-stacked">
+                <li class="active"><a href="#">Questionaires <span style="color: gray">(4 entries)</span></a></li>
+                <li><a href="#">Files <span style="color: gray">(94 entries)</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div id="chart2"></div>
+        <div id="chart3"></div>
+        <div id="chart4"></div>
+    </div>
+    <div id="row">
+        <div id="chart1"></div>
+        <div id="table1"></div>
+    </div>
+    <style>
+path {
+    color: white;
+}
+td {
+    padding-right: 4px;
+}
+    </style>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
+    <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js" ></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dc/1.6.0/dc.min.js"></script>
+    <script>
+
+var cross = undefined;
+var searchterm = "";
+
+d3.json('/data.json', function (err, data) {
+
+    // 1. Time
+    parseDate = d3.time.format("%Y-%m-%d").parse;
+    data.forEach(function(d) {
+        d.day = new Date(d.time * 1e3);
+        console.log(data[0]);
+        console.log(data[data.length-1]);
+    });
+    
+    cross = crossfilter(data);
+
+    //Summary data by group (crossfilter functions)
+    // Group by Time
+    d = cross.dimension(function(d) { return d.day; });
+    g = d.group().reduceSum(function(d) { return d.value; });
+
+
+    dc.lineChart('#chart1')
+    .dimension(d)
+    .group(g)
+    .height(512)
+    .width(512)
+    .x(d3.time.scale().domain([new Date(2013, 6-1, 1), new Date(2013, 10-1, 1)]))
+    .y(d3.scale.linear())
+    .elasticY(true);
+        
+    $("#input1").keyup(function (e) {
+        if (e.keyCode == 13) {
+            searchterm = this.value;
+            if(searchterm == "") {
+                // d4.filterAll();
+                chart3.filterAll();
+            } else {
+                // d4.filterAll();
+                // d4.filter(function (d) { return d.indexOf(searchterm) > -1; });
+                //chart3.filter(searchterm);
+                chart3.filter(function (d) { return d.toLowerCase().indexOf(searchterm.toLowerCase()) > -1; });
+            }
+            dc.redrawAll();
+        }
+    });
+        
+    // Group by Location
+    dc.renderAll();
+});
+    </script>
+</body>
+
+<!-- Working Layout -->
+<div class="container-fluid">
+      <div class="row-fluid">
+        <div id="chart1" class="col-md-4">Chart1</div>
+<!--         <div id="chart2" class="col-md-4">Chart2</div>
+        <div id="chart3" class="col-md-4">Chart3</div>
+        <div id="table1" class="col-md-4">Table1</div>
+ -->      </div>
+</div>
+</html>

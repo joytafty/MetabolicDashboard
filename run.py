@@ -160,12 +160,12 @@ def server():
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
     
-    @app.route('/sleep')
+    @app.route('/sleep/')
     def sleep():
         context = {
         }
         env = Environment(loader=FileSystemLoader('templates'))
-        return env.get_template('sleep.html').render(context)
+        return env.get_template('index.html').render(context)
 
     print 'Listening :8001...'
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})

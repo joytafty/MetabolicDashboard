@@ -1,112 +1,240 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Fitbit</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/dc.js/master/test/dc.css"/> -->
-    <link rel="stylesheet" type="text/css" href="https://raw.github.com/NickQiZhu/d3-cookbook/master/css/dc.css"/>
-</head>
-<body>
-    
-    <div class="row">
-        <div class="span12">
-          <input id="input1" type="text" class="search-query" placeholder="Search">
-          <button class='btn add-on'><i class="icon-stroller"></i></button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="span12">
-            <ul class="nav nav-tabs nav-stacked">
-                <li class="active"><a href="#">Questionaires <span style="color: gray">(4 entries)</span></a></li>
-                <li><a href="#">Files <span style="color: gray">(94 entries)</span></a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div id="chart2"></div>
-        <div id="chart3"></div>
-        <div id="chart4"></div>
-    </div>
-    <div id="row">
-        <div id="chart1"></div>
-        <div id="table1"></div>
-    </div>
+    <title>RestWell</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://raw.github.com/marcoceppi/bootstrap-glyphicons/master/css/bootstrap.icon-large.min.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet"/>
+    <link href="http://fonts.googleapis.com/css?family=Abel|Open+Sans:400,600" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../static/css/opentip.css"/>    
+
     <style>
-path {
-    color: white;
-}
-td {
-    padding-right: 4px;
-}
+        /* http://css-tricks.com/perfect-full-page-background-image/ */
+        html {
+            background: url('https://farm8.staticflickr.com/7261/7490967888_3da071ae6e_b.jpg') no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+
+        body {
+            padding-top: 20px;
+            font-size: 16px;
+            font-family: "Open Sans",serif;
+            background: transparent;
+        }
+
+        h1 {
+            font-family: "Abel", Arial, sans-serif;*/
+            font-weight: 400;
+            font-size: 40px;
+            color: #CCCCCC;
+        }
+
+        h1num {
+            font-family: "Abel", Arial, sans-serif;*/
+            font-weight: 200;
+            font-size: 160px;
+            color: #c3325f;
+        }
+
+        h1head {
+            font-family: "Abel", Arial, sans-serif;*/
+            font-weight: 200;
+            font-size: 80px;
+            color: #CCCCCC;
+        }
+
+        h2 {
+            font-family: "Abel", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 80px;
+            color: #808080;
+        }
+
+        h3 {
+            font-family: "Open Sans", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 60px;
+            color: #808080;
+        }
+
+        h4 {
+            font-family: "Open Sans", Arial, sans-serif;
+            font-weight: 400;
+            font-size: 30px;
+            color: #808080;
+        }
+
+        p {
+            font-family: "Abel", Arial, sans-serif;
+            color: #CCCCCC;
+        }
+
+        /* Override B3 .panel adding a subtly transparent background */
+        .panel {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0);
+            margin: 5px;
+        }
+
+        .panel2 {
+            background-color: rgba(255, 255, 255, 0);
+            margin:40px;
+        }
+
+        .margin-base-vertical {
+            margin: 40px;
+        }
+
     </style>
 
+</head>
+<body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-
-    <script src="http://square.github.io/crossfilter/crossfilter.v1.min.js" ></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/dc/1.6.0/dc.min.js"></script>
+    <script src="../static/js/moment.js"></script>
+    <script src="../static/js/opentip.js"></script>
+    <script src="http://momentjs.com/downloads/moment-timezone.min.js"></script>
+    <script src="../static/js/moment-timezone-data.js"></script>
     <script>
-
-var cross = undefined;
-var searchterm = "";
-
-d3.json('/data.json', function (err, data) {
-
-    // 1. Time
-    parseDate = d3.time.format("%Y-%m-%d").parse;
-    data.forEach(function(d) {
-        d.day = new Date(d.time * 1e3);
-        console.log(data[0]);
-        console.log(data[data.length-1]);
+    $.getJSON("data.json", function(d) {
+        tz = moment().tz(d[0].timezone).format("HH:mm A");                                
+        $("#topheader1").text(d[0].timezone);
+        $("#topheader2").text(tz);
     });
-    
-    cross = crossfilter(data);
-
-    //Summary data by group (crossfilter functions)
-    // Group by Time
-    d = cross.dimension(function(d) { return d.day; });
-    g = d.group().reduceSum(function(d) { return d.value; });
-
-
-    dc.lineChart('#chart1')
-    .dimension(d)
-    .group(g)
-    .height(512)
-    .width(512)
-    .x(d3.time.scale().domain([new Date(2013, 6-1, 1), new Date(2013, 10-1, 1)]))
-    .y(d3.scale.linear())
-    .elasticY(true);
-        
-    $("#input1").keyup(function (e) {
-        if (e.keyCode == 13) {
-            searchterm = this.value;
-            if(searchterm == "") {
-                // d4.filterAll();
-                chart3.filterAll();
-            } else {
-                // d4.filterAll();
-                // d4.filter(function (d) { return d.indexOf(searchterm) > -1; });
-                //chart3.filter(searchterm);
-                chart3.filter(function (d) { return d.toLowerCase().indexOf(searchterm.toLowerCase()) > -1; });
-            }
-            dc.redrawAll();
-        }
-    });
-        
-    // Group by Location
-    dc.renderAll();
-});
     </script>
-</body>
 
-<!-- Working Layout -->
-<div class="container-fluid">
-      <div class="row-fluid">
-        <div id="chart1" class="col-md-4">Chart1</div>
-<!--         <div id="chart2" class="col-md-4">Chart2</div>
-        <div id="chart3" class="col-md-4">Chart3</div>
-        <div id="table1" class="col-md-4">Table1</div>
- -->      </div>
-</div>
+    <!-- fetchSleep() -->
+    <script type="text/javascript">
+        function fetchSleep() {
+            $("#fetchsleep").click(function() {
+                // $("#slqual").css("background-color", "white");
+                $.getJSON("data.json", function (d) {
+                    $.each(d, function(p, v){
+                        // Sleep Efficiency
+                        slef = v.efficiency;
+                        // Sleep Duration Value
+                        hr_slduration = Math.floor(v.timeInBed/60);
+                        min_slduration = (v.timeInBed%60);
+                        // Date 
+                        recdate = moment(v.date).format("ddd MMM DD, YYYY");
+                        // Bed Time
+                        slbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm").format("HH:mm A");
+                        // Awake Time
+                        tempbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm");
+                        slawaketime = moment(tempbedtime).add('m', v.timeInBed).format("HH:mm A");
+                        // Bind data                        
+                        $("#slqual").text(slef+'%');
+                        $("#slduration").text(hr_slduration + "h " + min_slduration +"min");
+                        $("#bedtime").text(slbedtime);
+                        $("#sldate").text(recdate);
+                        $("#awaketime").text(slawaketime);
+                    });
+                });
+
+            $("#fetchsleep").mouseleave(function() {
+                // $("#slqual").css("background-color", "pink");
+                });
+            });
+        }
+    </script>
+
+    <!-- Outer Score Panel -->
+    
+    <div class="container">
+    <main role="main" align="center">
+        <h2 id="topheader1"></h2>
+        <h3 class="margin-base-vertical" id="topheader2"></h3>
+    </main>
+    </div>
+    <div class="container">
+        <div class ="row-fluid">
+            <div class=".col-xs-12 col-xs-offset-4 .col-sm-3 col-sm-offset-1 panel2 panel2-default">
+                <div class="row">
+                    <i class="icon-time" style="color: #c3325f"> RestWell Score </i>
+                    <button type="button" class="btn btn-default" 
+                        data-ot="load lastnight's data" data-ot-delay="0"
+                        style="background-color: rgba(0, 0, 0, 0.05); border:0px" 
+                        id="fetchsleep" onClick="fetchSleep()">
+                        <span class="glyphicon glyphicon-repeat" style="color:#c3325f"></span>
+                     </button>                    
+                </div>
+                <div class="row">
+                   <h1num>87</h1num>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lower Panel -->
+    <div class="container">
+        <div class="row-fluid">
+            <div class="col-xs-12 .col-sm-4 .col-md-4 .col-lg-4 panel panel-default">
+                <!-- Row 1 -->
+                <div class="row-fluid">                     
+                     <h4 id="sldate"></h4>
+                </div>
+                <!-- Row 2 -->
+                <div class="row-fluid">
+                    <div class=".col-xs-12 col-xs-offset-4 .col-sm-2 col-sm-offset-1">
+                        <p>Sleep Efficiency</p>
+                        <h4 id="slqual">93 %</h4>
+                    </div>
+                    <div class=".col-xs-12 col-xs-offset-1 .col-sm-3 col-sm-offset-1">
+                        <p>Sleep Duration</p>
+                        <h4 id="slduration">8 h 44 mins</h4>
+                    </div>
+                </div>
+                <!-- Row 3 -->
+                <div class="row-fluid">
+                    <div class=".col-xs-12 col-xs-offset-1 .col-sm-3 col-sm-offset-1">
+                        <p>Bed time</p>
+                        <h4 id="bedtime">9:30 pm</h4>
+                    </div>
+                    <div class=".col-xs-12 col-xs-offset-1 .col-sm-3 col-sm-offset-1">
+                        <p>Awake time</p>
+                        <h4 id="awaketime">6:14 am</h4>
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="row-fluid">
+                    <div class=".col-xs-6 col-xs-offset-4 .col-sm-3 col-sm-offset-6">
+                        <form>
+                        <p class="input-group">
+                            <span class="input-group-addon"><span class="icon-envelope"></span></span>
+                            <input type="text" class="form- input" name="email" placeholder="joytafty@gmail.com" />
+                        </p>
+                        <p class="help-block text-center"><small>Let us know how we can help.</small></p>
+                        <p class="text-center">
+                            <button type="submit" class="btn btn-success">Send us feedback</button>
+                        </p>
+                        </form>
+                    </div>
+                </div>                
+            </div><!-- //main content -->
+
+            <!-- Column2 -->            
+            <div class="col-xs-12 .col-sm-4  .col-md-4 .col-lg-4 panel panel-default">
+            <!-- Row 1 -->
+                <div class="row-fluid" style="min-height:180px;">                     
+                 <h4 id="sldate">Line graph</h4>
+                </div>
+            </div>
+
+            <!-- Column2 -->            
+            <div class="col-xs-12 .col-sm-4 .col-lg-4 panel panel-default">
+            <!-- Row 1 -->
+                <div class="row-fluid" style="min-height:180px;">                     
+                 <h4 id="sldate">Forecast</h4>
+                </div>
+            </div>
+        
+        </div><!-- //row -->
+    </div> <!-- //container -->
+
+</body>
 </html>
