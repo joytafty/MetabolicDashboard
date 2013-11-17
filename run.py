@@ -145,7 +145,8 @@ def server():
 
     @app.route('/sleep/startTime.json')
     def sleep_json():
-        fb = fitbit.Fitbit(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'), flask.session['FITBIT_TOKEN'], flask.session['FITBIT_TOKEN_SECRET'])
+        fb = fitbit.Fitbit(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'), 
+            user_key=flask.session['FITBIT_TOKEN'], user_secret=flask.session['FITBIT_TOKEN_SECRET'])
         return json.dumps(fb.time_series('sleep/startTime', period='max'))
     
     @app.route('/')
