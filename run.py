@@ -166,7 +166,7 @@ def server():
     def logout():
         del flask.session['FITBIT_TOKEN']
         del flask.session['FITBIT_TOKEN_SECRET']
-        return flask.redirect('/')
+        return flask.redirect('https://www.fitbit.com/logout')
     
     @app.route('/login')
     def login():
