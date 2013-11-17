@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import cgi
 import datetime
 import fitbit
 import flask
@@ -8,6 +9,7 @@ from flask import Flask, url_for, render_template
 from functools import update_wrapper
 from jinja2 import Environment, FileSystemLoader
 import json
+import oauth2 as oauth
 import os
 # import redis
 import time
@@ -150,9 +152,7 @@ def server():
     
     @app.route('/login')
     def login():
-        import oauth2 as oauth
         import urllib2
-        import urlparse
     
         consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
         client = oauth.Client(consumer)
@@ -168,8 +168,18 @@ def server():
         
     @app.route('/fitbit')
     def fitbit_callback():
-        return str(flask.request)
+        consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
+        access_token = dict()
+        token = oauth.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
+        token.set_verifier(request.args.get('oauth_verifier'))
+        client = oauth.Client(consumer, token)
+        resp, content = client.request('https://api.fitbit.com/oauth/access_token', 'POST')
+        if resp['status'] != '200':
+            raise Exception("Invalid response %s." % resp['status'])
+        access_token = dict(cgi.parse_qsl(content))
     
+        return str(access_token)
+
     @app.route('/sleep/')
     def sleep():
         context = {
