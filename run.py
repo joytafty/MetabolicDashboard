@@ -147,7 +147,12 @@ def server():
     def sleep_json():
         fb = fitbit.Fitbit(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'), 
             user_key=flask.session['FITBIT_TOKEN'], user_secret=flask.session['FITBIT_TOKEN_SECRET'])
-        return json.dumps(fb.time_series('sleep/startTime', period='max'))
+        data = fb.time_series('sleep/startTime', period='max')
+        data = {
+            # only show if value != ''
+            'sleep-startTime': [datum for datum in data['sleep-startTime'] if datum['value']],
+        }
+        return json.dumps(data)
     
     @app.route('/')
     def index_html():
