@@ -177,7 +177,9 @@ def server():
             raise Exception("Invalid response %s." % resp['status'])
         access_token = dict(cgi.parse_qsl(content))
     
-        return str(access_token)
+        flask.session['FITBIT_TOKEN'] = access_token['oauth_token']
+        flask.session['FITBIT_TOKEN_SECRET'] = access_token['oauth_token_secret']
+        return flask.redirect('/')
 
     @app.route('/sleep/')
     def sleep():
