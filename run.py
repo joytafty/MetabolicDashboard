@@ -169,7 +169,6 @@ def server():
     @app.route('/fitbit')
     def fitbit_callback():
         consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
-        access_token = dict()
         token = oauth.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
         token.set_verifier(request.args.get('oauth_verifier'))
         client = oauth.Client(consumer, token)
@@ -190,7 +189,7 @@ def server():
     print 'Listening :8001...'
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
     port = int(os.environ.get("PORT", 5000))    
-    app.run(host='0.0.0.0', port=port, use_debugger=True)
+    app.run(host='0.0.0.0', port=port, use_debugger=True, debug=True)
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
     try:
         server.start()
