@@ -181,7 +181,7 @@ def server():
 
         request_token = dict(urlparse.parse_qsl(content))
 
-        url = 'https://api.fitbit.com/oauth/authenticate?oauth_token=' + request_token['oauth_token']
+        url = 'https://www.fitbit.com/oauth/authenticate?oauth_token=' + request_token['oauth_token']
         return flask.redirect(url)
         
     @app.route('/fitbit')
