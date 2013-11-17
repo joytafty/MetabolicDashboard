@@ -92,22 +92,9 @@ def load():
                 redis.sadd('fitbit', s)
                 print s
 
-def authenticate():
-    import oauth2 as oauth
-    import urllib2
-    import urlparse
-    
-    consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
-    client = oauth.Client(consumer)
-    resp, content = client.request('https://api.fitbit.com/oauth/request_token')    
-    # resp, content = client.request('https://api.fitbit.com/oauth/request_token', force_auth_header=True)
-    if resp['status'] != '200':
-        raise Exception("Invalid response %s." % resp['status'])
 
-    request_token = dict(urlparse.parse_qsl(content))
-
-    url = 'https://api.fitbit.com/oauth/authenticate?oauth_token=' + request_token['oauth_token']
-    return flask.redirect(url)
+def old_auth():
+    pass
     # print "Request Token:"
     # print "    - oauth_token        = %s" % request_token['oauth_token']
     # print "    - oauth_token_secret = %s" % request_token['oauth_token_secret']
@@ -161,6 +148,24 @@ def server():
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
     
+    @app.route('/login')
+    def login():
+        import oauth2 as oauth
+        import urllib2
+        import urlparse
+    
+        consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
+        client = oauth.Client(consumer)
+        resp, content = client.request('https://api.fitbit.com/oauth/request_token')    
+        # resp, content = client.request('https://api.fitbit.com/oauth/request_token', force_auth_header=True)
+        if resp['status'] != '200':
+            raise Exception("Invalid response %s." % resp['status'])
+
+        request_token = dict(urlparse.parse_qsl(content))
+
+        url = 'https://api.fitbit.com/oauth/authenticate?oauth_token=' + request_token['oauth_token']
+        return flask.redirect(url)
+        
     @app.route('/fitbit')
     def fitbit_callback():
         return str(flask.request)
