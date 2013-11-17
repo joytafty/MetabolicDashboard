@@ -3,6 +3,7 @@
 import argparse
 import datetime
 import fitbit
+import flask
 from flask import Flask, url_for, render_template
 from functools import update_wrapper
 from jinja2 import Environment, FileSystemLoader
@@ -95,10 +96,8 @@ def authenticate():
     import oauth2 as oauth
     import urllib2
     import urlparse
-    consumer = oauth.Consumer(
-        key    = 'e83cb29ae0f0439e8aeb2704b5e9eaa4',
-        secret = '77fdd761c63247868627cc4ed2114306')
-
+    
+    consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
     client = oauth.Client(consumer)
     resp, content = client.request('https://api.fitbit.com/oauth/request_token')    
     # resp, content = client.request('https://api.fitbit.com/oauth/request_token', force_auth_header=True)
@@ -107,39 +106,41 @@ def authenticate():
 
     request_token = dict(urlparse.parse_qsl(content))
 
-    print "Request Token:"
-    print "    - oauth_token        = %s" % request_token['oauth_token']
-    print "    - oauth_token_secret = %s" % request_token['oauth_token_secret']
-    print 
-
-    print "Go to the following link in your browser:"
-    print "%s?oauth_token=%s" % (
-        'https://www.fitbit.com/oauth/authorize', 
-        request_token['oauth_token'])
-    print 
-
-    accepted = 'n'
-    while accepted.lower() == 'n':
-        accepted = raw_input('Have you authorized me? (y/n) ')
-    oauth_verifier = raw_input('What is the PIN? ')
-
-    token = oauth.Token(
-        request_token['oauth_token'],
-        request_token['oauth_token_secret'])
-    token.set_verifier(oauth_verifier)
-
-    client = oauth.Client(consumer, token)
-    resp, content = client.request(
-        'https://api.fitbit.com/oauth/access_token', 
-        "POST")
-    access_token = dict(urlparse.parse_qsl(content))
-
-    print "Access Token:"
-    print "    - oauth_token        = %s" % access_token['oauth_token']
-    print "    - oauth_token_secret = %s" % access_token['oauth_token_secret']
-    print
-    print "You may now access protected resources using the access tokens above." 
-    print
+    url = 'https://api.fitbit.com/oauth/authenticate?oauth_token=' + request_token['oauth_token']
+    return flask.redirect(url)
+    # print "Request Token:"
+    # print "    - oauth_token        = %s" % request_token['oauth_token']
+    # print "    - oauth_token_secret = %s" % request_token['oauth_token_secret']
+    # print 
+    # 
+    # print "Go to the following link in your browser:"
+    # print "%s?oauth_token=%s" % (
+    #     'https://www.fitbit.com/oauth/authorize', 
+    #     request_token['oauth_token'])
+    # print 
+    # 
+    # accepted = 'n'
+    # while accepted.lower() == 'n':
+    #     accepted = raw_input('Have you authorized me? (y/n) ')
+    # oauth_verifier = raw_input('What is the PIN? ')
+    # 
+    # token = oauth.Token(
+    #     request_token['oauth_token'],
+    #     request_token['oauth_token_secret'])
+    # token.set_verifier(oauth_verifier)
+    # 
+    # client = oauth.Client(consumer, token)
+    # resp, content = client.request(
+    #     'https://api.fitbit.com/oauth/access_token', 
+    #     "POST")
+    # access_token = dict(urlparse.parse_qsl(content))
+    # 
+    # print "Access Token:"
+    # print "    - oauth_token        = %s" % access_token['oauth_token']
+    # print "    - oauth_token_secret = %s" % access_token['oauth_token_secret']
+    # print
+    # print "You may now access protected resources using the access tokens above." 
+    # print
 
 def server():
     from cherrypy import wsgiserver
@@ -159,6 +160,10 @@ def server():
         }
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
+    
+    @app.route('/fitbit')
+    def fitbit_callback():
+        return str(flask.request)
     
     @app.route('/sleep/')
     def sleep():
