@@ -262,6 +262,7 @@ $.getJSON('/sleep/startTime.json', function (data) {
        // }
        datum = data[data.length - 1];
        $('#day').text(datum['dateTime']);
+       $('#slduration').text(datum['value']);
    }
 });
 </script>
