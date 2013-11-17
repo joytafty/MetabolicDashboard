@@ -146,9 +146,16 @@ def server():
     @app.route('/')
     def index_html():
         context = {
+            fitbit_authenticated: 'FITBIT_TOKEN' in flask.session,
         }
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
+    
+    @app.route('/logout')
+    def logout():
+        del flask.session['FITBIT_TOKEN']
+        del flask.session['FITBIT_TOKEN_SECRET']
+        return flask.redirect('/')
     
     @app.route('/login')
     def login():
