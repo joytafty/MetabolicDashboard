@@ -244,6 +244,16 @@
         
         </div><!-- //row -->
     </div> <!-- //container -->
+    {% if fitbit_authenticated %}
+<script>
+$.getJSON('/sleep/startTime.json', function (data) {
+   data = data['sleep-startTime'];
+   if(data.length == 0) {
+       alert('No sleep recorded.  Please hold the Fitbit button before falling asleep.');
+   } 
+});
+</script>
+    {% endif %}
 
 </body>
 </html>
