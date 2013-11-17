@@ -110,35 +110,35 @@
     <!-- fetchSleep() -->
     <script type="text/javascript">
         function fetchSleep() {
-            $("#fetchsleep").click(function() {
-                // $("#slqual").css("background-color", "white");
-                $.getJSON("data.json", function (d) {
-                    $.each(d, function(p, v){
-                        // Sleep Efficiency
-                        slef = v.efficiency;
-                        // Sleep Duration Value
-                        hr_slduration = Math.floor(v.timeInBed/60);
-                        min_slduration = (v.timeInBed%60);
-                        // Date 
-                        recdate = moment(v.date).format("ddd MMM DD, YYYY");
-                        // Bed Time
-                        slbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm").format("HH:mm A");
-                        // Awake Time
-                        tempbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm");
-                        slawaketime = moment(tempbedtime).add('m', v.timeInBed).format("HH:mm A");
-                        // Bind data                        
-                        $("#slqual").text(slef+'%');
-                        $("#slduration").text(hr_slduration + "h " + min_slduration +"min");
-                        $("#bedtime").text(slbedtime);
-                        $("#sldate").text(recdate);
-                        $("#awaketime").text(slawaketime);
-                    });
-                });
-
-            $("#fetchsleep").mouseleave(function() {
-                // $("#slqual").css("background-color", "pink");
-                });
-            });
+            // $("#fetchsleep").click(function() {
+            //     // $("#slqual").css("background-color", "white");
+            //     $.getJSON("data.json", function (d) {
+            //         $.each(d, function(p, v){
+            //             // Sleep Efficiency
+            //             slef = v.efficiency;
+            //             // Sleep Duration Value
+            //             hr_slduration = Math.floor(v.timeInBed/60);
+            //             min_slduration = (v.timeInBed%60);
+            //             // Date 
+            //             recdate = moment(v.date).format("ddd MMM DD, YYYY");
+            //             // Bed Time
+            //             slbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm").format("HH:mm A");
+            //             // Awake Time
+            //             tempbedtime = moment(v.date + '-' + v.startTime, "YYYY-MM-DD-HH:mm");
+            //             slawaketime = moment(tempbedtime).add('m', v.timeInBed).format("HH:mm A");
+            //             // Bind data                        
+            //             $("#slqual").text(slef+'%');
+            //             $("#slduration").text(hr_slduration + "h " + min_slduration +"min");
+            //             $("#bedtime").text(slbedtime);
+            //             $("#sldate").text(recdate);
+            //             $("#awaketime").text(slawaketime);
+            //         });
+            //     });
+            // 
+            // $("#fetchsleep").mouseleave(function() {
+            //     // $("#slqual").css("background-color", "pink");
+            //     });
+            // });
         }
     </script>
 
@@ -251,7 +251,11 @@ $.getJSON('/sleep/startTime.json', function (data) {
    if(data.length == 0) {
        alert('No sleep recorded.  Please hold the Fitbit button before falling asleep.');
    } else {
-       alert('')
+       if(data.length == 1) {
+           alert('One ' + String(data.length) + ' sleepy day found.')
+       } else {
+           alert(String(data.length) + ' sleepy days found.')
+       }
    }
 });
 </script>
