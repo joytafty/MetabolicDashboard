@@ -190,7 +190,9 @@ def server():
 
     print 'Listening :8001...'
     d = wsgiserver.WSGIPathInfoDispatcher({'/': app})
-    port = int(os.environ.get("PORT", 5000))    
+    port = int(os.environ.get("PORT", 5000))
+    
+    app.secret_key = os.getenv('SESSION_SECRET', os.urandom(48))
     app.run(host='0.0.0.0', port=port, use_debugger=True, debug=True)
     server = wsgiserver.CherryPyWSGIServer(('0.0.0.0', 8001), d)
     try:
