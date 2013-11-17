@@ -170,7 +170,7 @@ def server():
     def fitbit_callback():
         consumer = oauth.Consumer(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'))
         token = oauth.Token(flask.request.args.get('oauth_token'), flask.request.args.get('oauth_verifier'))
-        token.set_verifier(request.args.get('oauth_verifier'))
+        token.set_verifier(flask.request.args.get('oauth_verifier'))
         client = oauth.Client(consumer, token)
         resp, content = client.request('https://api.fitbit.com/oauth/access_token', 'POST')
         if resp['status'] != '200':
