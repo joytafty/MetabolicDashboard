@@ -146,7 +146,7 @@ def server():
     @app.route('/')
     def index_html():
         context = {
-            fitbit_authenticated: 'FITBIT_TOKEN' in flask.session,
+            'fitbit_authenticated': 'FITBIT_TOKEN' in flask.session,
         }
         env = Environment(loader=FileSystemLoader('templates'))
         return env.get_template('index.html').render(context)
