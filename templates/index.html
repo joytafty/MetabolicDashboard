@@ -100,11 +100,11 @@
     <!-- // <script src="http://momentjs.com/downloads/moment-timezone.min.js"></script> -->
     <!-- // <script src="../static/js/moment-timezone-data.js"></script> -->
     <script>
-    $.getJSON("data.json", function(d) {
-        tz = moment().tz(d[0].timezone).format("HH:mm A");                                
-        $("#topheader1").text(d[0].timezone);
-        $("#topheader2").text(tz);
-    });
+    // $.getJSON("data.json", function(d) {
+    //     tz = moment().tz(d[0].timezone).format("HH:mm A");                                
+    //     $("#topheader1").text(d[0].timezone);
+    //     $("#topheader2").text(tz);
+    // });
     </script>
 
     <!-- fetchSleep() -->
@@ -199,6 +199,10 @@
                         <p>Awake time</p>
                         <h4 id="awaketime">6:14 am</h4>
                     </div>
+                    <div class=".col-xs-10 col-xs-offset-1 .col-sm-3 col-sm-offset-1">
+                        <p>Day</p>
+                        <h4 id="day">2013-11-01</h4>
+                    </div>
                 </div>
 
                 <!-- Row 4 -->
@@ -251,11 +255,13 @@ $.getJSON('/sleep/startTime.json', function (data) {
    if(data.length == 0) {
        alert('No sleep recorded.  Please hold the Fitbit button before falling asleep.');
    } else {
-       if(data.length == 1) {
-           alert('One ' + String(data.length) + ' sleepy day found.')
-       } else {
-           alert(String(data.length) + ' sleepy days found.')
-       }
+       // if(data.length == 1) {
+       //     alert('One ' + String(data.length) + ' sleepy day found.')
+       // } else {
+       //     alert(String(data.length) + ' sleepy days found.')
+       // }
+       datum = data[data.length - 1];
+       $('#day').text(datum['dateTime']);
    }
 });
 </script>
