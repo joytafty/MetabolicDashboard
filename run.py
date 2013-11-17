@@ -143,6 +143,11 @@ def server():
             list(redis.smembers('fitbit'))])
         return s
 
+    @app.route('/sleep/startTime.json')
+    def sleep_json():
+        fb = fitbit.Fitbit(os.getenv('FITBIT_KEY'), os.getenv('FITBIT_SECRET'), flask.session['FITBIT_TOKEN'], flask.session['FITBIT_TOKEN_SECRET'])
+        return json.dumps(fb.time_series('sleep/startTime', period='max'))
+    
     @app.route('/')
     def index_html():
         context = {
